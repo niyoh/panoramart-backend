@@ -1,0 +1,214 @@
+#!/bin/bash
+
+cat << *** > /tmp/setup-script.sh
+##########################################################################################
+
+#!/bin/bash
+
+# install compiler tools
+sudo yum groupinstall -y 'Development Tools' && sudo yum install -y curl git m4 ruby texinfo bzip2-devel curl-devel expat-devel ncurses-devel zlib-devel
+
+# install npm & node
+curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.31.0/install.sh | bash
+source ~/.bash_profile
+nvm install 6.3.0
+
+# main code private key
+cat << EOF > ~/.ssh/vast-server_repo.id_rsa
+-----BEGIN RSA PRIVATE KEY-----
+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
+-----END RSA PRIVATE KEY-----
+EOF
+chmod 400 ~/.ssh/vast-server_repo.id_rsa
+
+# main code public key
+cat << EOF > ~/.ssh/vast-server_repo.id_rsa.pub
+ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQDqD8wqH6W5xuBlUA4EtlXmKbxN1IfMwlPd80JDuOHTfmL54Vw6Uz3LZID7MKfrpj3qCUbTQEpn8vRXXgSUBVYfl3ZnjMnG/5IOS6OUYmDVAY3lIYaCLEHg68SWyLBL1m5GjTx8S+N5h6rUucI2Q5HndY3fE7vn2UAxEiRr55j6NMDGXHIzk/6JcqPMbCgD3WeoGZ0DqD6QI94IaFt8qzTwtSUrq6wxo4ZrOE6tLT44Zg2cGWpGMD+T24Xn1nl9hz+p9Lb/AKEEPjIOPhnlWLk17nZCihM7fwLWfu9F+c5ts0PvTHzhOWBMA1CjtqSSs86A0oe0yMGg4BPlSUR0+u/1BpwzYsHQsUCPCBs20FjydcZKPYzgGe214PM5RsJwZjtipruI0KUbdErD8X9o2TS7IZxQzKsN5c1c8B/xpPkXTOEbbn8dVVwzeWnDabDSLCrPHSDL8U2rKA3X2lVXIgu1v5nxil0IOZ9dceah3KZkT/PKc/6wRU1r3jXSuWYlLuGmy7zeB4S9za8Jruk7HHD/d9YZnp0CjQtT1TzyomhhPJDGMYiBgtBBk4bPid/yFVRsDZ9GDBLW8Xnku0LugjyqF8Z2BdTHlsx+wuRTnrS8QScy1HMoPAC5m5639QcYSlSBy8csXtaQlJxL+e9jdre8rX8XdF5WaGY8Jl1/1UCpiw== hychowac@ust.hk
+EOF
+
+# vast xml repo private key
+cat << EOF > ~/.ssh/vast-server-xml_repo.id_rsa
+-----BEGIN RSA PRIVATE KEY-----
+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
+-----END RSA PRIVATE KEY-----
+EOF
+chmod 400 ~/.ssh/vast-server-xml_repo.id_rsa
+
+# vast xml repo public key
+cat << EOF > ~/.ssh/vast-server-xml_repo.id_rsa.pub
+ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQCZM89raLJjanjOyYE8s0WVVJP6mK8mNAJVg2KzyRVZWCpTEGfYL+r/5aBe4SkmRcEpzrO561N2aYBk0h6EiNeIjmAEaY7bh13Vxdpk0S3So66BkqDstoOUIj9TGiBycOK8JrJn38IqiRdlYHOO0EIMjx27bUHb2c37ymxw9IAqLOYmwVwGY2EtBJDXIaEO8VKrXta9I3bxYTPq1DZSmdg3ijC8fOGMI+YK8O4tQryyD4aVZqbvh/qR3H7vRYyAcfGtUm0xlyNSRAYQH9qGmNMxClB4MkTqszfvXZUpRBAzga29fUKTcgJpFeZ2WmEtQojC/mfTFscPHEEP4p9XXa8XlgPWigT1WQlB7Sh/p3HUxdtCyCQewJnDbk3c9/6/kXSuCBV4ratQKxP/Bq4VOC2h3BkejXHxMbVXP0frL9K776co8TeJlGv9doGXabHLvOs4WMGwJ9of3QW1XyFRqxEaOzZVfP+Re3ralqgxHqyRXi9pCUI2z/AmdZSnk+FsYb479y/h0aF/WbtJ9R9uklfYptbjANo32uKr5QxqNPveX1oBdFBML9a7257+huWAVoY+fC1+QmYoMQ5JgBXEFig2f6Wa2pu3i6zYEsZGI0FK9boHyIBBv+3HtBsjmR3XuKSmBOOtQ5K1byjOWPjD+jC+cipnf4nYxT8Pw1BT+pgkHw== hychowac@ust.hk
+EOF
+
+# known hosts
+cat << EOF > ~/.ssh/known_hosts
+|1|9pXoesFq4F1vSnJtESKII//OmeY=|TN5+XN7k2newazNL1S+yyvk68Pc= ssh-rsa AAAAB3NzaC1yc2EAAAABIwAAAQEAq2A7hRGmdnm9tUDbO9IDSwBK6TbQa+PXYPCPy6rbTrTtw7PHkccKrpp0yVhp5HdEIcKr6pLlVDBfOLX9QUsyCOV0wzfjIJNlGEYsdlLJizHhbn2mUjvSAHQqZETYP81eFzLQNnPHt4EVVUh7VfDESU84KezmD5QlWpXLmvU31/yMf+Se8xhHTvKSCZIFImWwoG6mbUoWf9nzpIoaSjB+weqqUUmpaaasXVal72J+UX2B+2RPW3RcT0eOzQgqlJL3RKrTJvdsjE3JEAvGq3lGHSZXy28G3skua2SmVi/w4yCE6gbODqnTWlg7+wC604ydGXA8VJiS5ap43JXiUFFAaQ==
+|1|APYPANl8wPqn8fkyDrjQTHapUgw=|Fq3GQ2NTqQukEM/fohgrHU8ZqIY= ssh-rsa AAAAB3NzaC1yc2EAAAABIwAAAQEAq2A7hRGmdnm9tUDbO9IDSwBK6TbQa+PXYPCPy6rbTrTtw7PHkccKrpp0yVhp5HdEIcKr6pLlVDBfOLX9QUsyCOV0wzfjIJNlGEYsdlLJizHhbn2mUjvSAHQqZETYP81eFzLQNnPHt4EVVUh7VfDESU84KezmD5QlWpXLmvU31/yMf+Se8xhHTvKSCZIFImWwoG6mbUoWf9nzpIoaSjB+weqqUUmpaaasXVal72J+UX2B+2RPW3RcT0eOzQgqlJL3RKrTJvdsjE3JEAvGq3lGHSZXy28G3skua2SmVi/w4yCE6gbODqnTWlg7+wC604ydGXA8VJiS5ap43JXiUFFAaQ==
+EOF
+
+# ssh key configuration
+cat << EOF > ~/.ssh/config
+Host vast-server.github.com
+  HostName github.com
+  User git
+  IdentityFile /root/.ssh/vast-server_repo.id_rsa
+  IdentitiesOnly yes
+
+Host vast-server-xml.github.com
+  HostName github.com
+  User git
+  IdentityFile /root/.ssh/vast-server-xml_repo.id_rsa
+  IdentitiesOnly yes
+EOF
+
+# clone all repositories
+git clone git@vast-server.github.com:martinhy59/vast-server.git ~/vast-server
+git clone git@vast-server-xml.github.com:martinhy59/vast-server-xml.git ~/vast-server/vastxml
+cd ~/vast-server
+
+# install dependency node_modules
+npm install
+
+# install redis
+rpm -Uvh http://download.fedoraproject.org/pub/epel/6/x86_64/epel-release-6-8.noarch.rpm
+rpm -Uvh http://rpms.famillecollet.com/enterprise/remi-release-6.rpm
+yum --enablerepo=remi,remi-test install -y redis
+
+# set redis as startup service
+chkconfig --add redis
+chkconfig --level 345 redis on
+service redis start
+
+# install pm2
+npm install pm2 -g
+cd ~
+cat << EOF > ~/pm2-run
+#!/bin/bash
+cd vast-server
+pm2 start bin/www -x -- --env=prod --port=80
+EOF
+chmod +x pm2-run
+sh pm2-run
+
+# vast-server-xml pull cronjob
+cat << EOF > ~/git-pull-vast-server-xml
+#!/bin/bash
+cd /root/vast-server/vastxml
+git pull
+EOF
+chmod +x git-pull-vast-server-xml 
+crontab -l > /tmp/vast-server-xml_cronjob
+echo "*/10 * * * * /root/git-pull-vast-server-xml >> /var/log/vast-server-xml_cronjob.log 2>&1" >> /tmp/vast-server-xml_cronjob
+crontab /tmp/vast-server-xml_cronjob
+rm -f /tmp/vast-server-xml_cronjob
+
+# util: tail (a cleaned) log
+cat << EOF > ~/tail-clean-log
+#!/bin/bash
+clear
+truncate ~/.pm2/logs/www-out-0.log --size 0
+tail -f ~/.pm2/logs/www-out-0.log | grep sess
+EOF
+chmod +x tail-clean-log 
+
+##########################################################################################
+***
+
+sudo su -c "mv /tmp/setup-script.sh /root/setup-script.sh"
+sudo su -c "chmod +x /root/setup-script.sh"
+sudo su -c "sh /root/setup-script.sh"

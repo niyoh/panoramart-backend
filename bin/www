@@ -15,7 +15,8 @@ var http = require('http');
 // program parameters
 var argv = require('minimist')(process.argv.slice(2));
 
-var port = normalizePort(argv.port || process.env.PORT || '3000');
+//var port = normalizePort(argv.port || process.env.PORT || '3000');
+var port = normalizePort(3003);
 console.log('listening port: ' + port);
 app.set('port', port);
 

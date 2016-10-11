@@ -7,6 +7,7 @@ var db = require('../db');
 /* Web Service Body */
 
 router.route('/posts').get(function(req, res, next) {
+    var queryParams = ['chrono'];   // by default we use chronological order
 
     // Sorting
     var sort = req.query.sort;
@@ -16,10 +17,29 @@ router.route('/posts').get(function(req, res, next) {
         // TODO: prevent injection
         sortArray = JSON.parse(sort);
         for (var i = 0; i < sortArray.length; i ++) {
-            sortParams.push('BY');
-            sortParams.push('*->' + sortArray[i].field);
-            if (sortArray[i].isAlpha === true) sortParams.push('ALPHA');
-            sortParams.push(sortArray[i].order);
+
+            // predefined indexes (applicable if only sorted by 1 field)
+            if (sortArray.length === 1) {
+                if (sortArray[i].field === 'date') {
+                    queryParams = ['chrono'];
+                    sortParams = ['BY', 'nosort', sortArray[i].order];
+                } else if (sortArray[i].field === 'comments') {
+                    queryParams = ['comments'];
+                    sortParams = ['BY', 'nosort', sortArray[i].order];
+                } else if (sortArray[i].field === 'likes') {
+                    queryParams = ['likes'];
+                    sortParams = ['BY', 'nosort', sortArray[i].order];
+                } else if (sortArray[i].field === 'videos') {
+                    queryParams = ['videos'];
+                    sortParams = ['BY', 'nosort', sortArray[i].order];
+                }
+            } else {
+                // generic fields
+                sortParams.push('BY');
+                sortParams.push('*->' + sortArray[i].field);
+                if (sortArray[i].isAlpha === true) sortParams.push('ALPHA');
+                sortParams.push(sortArray[i].order);
+            }
         }
     }
 
@@ -31,7 +51,9 @@ router.route('/posts').get(function(req, res, next) {
         'display_src',
         'date',
         'likes',
-        'comments'
+        'comments',
+        'is_video',
+        'video_url'
     ];
     var fieldParams = [];
     for (var i in fields) {
@@ -59,7 +81,6 @@ router.route('/posts').get(function(req, res, next) {
     }
 
     // Form Query
-    var queryParams = ['post'];
     queryParams = queryParams.concat(sortParams);
     queryParams = queryParams.concat(fieldParams);
     queryParams = queryParams.concat(paginationParams);
@@ -75,7 +96,7 @@ router.route('/posts').get(function(req, res, next) {
         }
 
         res.send(posts);
-    })
+    });
 });
 
 module.exports = router;

@@ -6,6 +6,30 @@ var db = require('../db');
 
 /* Web Service Body */
 
+router.route('/favorite').post(function(req, res, next) {
+    var postId = 'post:' + req.body.postId;
+    console.log(postId);
+    db.get().zscan('favorites', 0, 'MATCH', postId, function(err, result) {
+        if (result.length >= 2) {
+            if (result[1].length >= 1) {
+                // already favorited
+                db.get().zrem('favorites', postId, function(err, result) {
+                    res.send({
+                        'favorite': 0
+                    });
+                });
+            } else {
+                // not favorited
+                db.get().zadd('favorites', Math.floor(Date.now() / 1000), postId, function(err, result) {
+                    res.send({
+                        'favorite': 1
+                    });
+                });
+            }
+        }
+    });
+});
+
 router.route('/posts').get(function(req, res, next) {
     var queryParams = ['chrono'];   // by default we use chronological order
 
@@ -31,6 +55,9 @@ router.route('/posts').get(function(req, res, next) {
                     sortParams = ['BY', 'nosort', sortArray[i].order];
                 } else if (sortArray[i].field === 'videos') {
                     queryParams = ['videos'];
+                    sortParams = ['BY', 'nosort', sortArray[i].order];
+                } else if (sortArray[i].field === 'favorites') {
+                    queryParams = ['favorites'];
                     sortParams = ['BY', 'nosort', sortArray[i].order];
                 }
             } else {

@@ -6,113 +6,23 @@ var db = require('../db');
 
 /* Web Service Body */
 
-router.route('/favorite').post(function(req, res, next) {
-    var postId = 'post:' + req.body.postId;
-    console.log(postId);
-    db.get().zscan('favorites', 0, 'MATCH', postId, function(err, result) {
-        if (result.length >= 2) {
-            if (result[1].length >= 1) {
-                // already favorited
-                db.get().zrem('favorites', postId, function(err, result) {
-                    res.send({
-                        'favorite': 0
-                    });
-                });
-            } else {
-                // not favorited
-                db.get().zadd('favorites', Math.floor(Date.now() / 1000), postId, function(err, result) {
-                    res.send({
-                        'favorite': 1
-                    });
-                });
-            }
-        }
-    });
-});
-
-router.route('/posts').get(function(req, res, next) {
-    var queryParams = ['chrono'];   // by default we use chronological order
-
-    // Sorting
-    var sort = req.query.sort;
-    var sortArray = [];
-    var sortParams = [];
-    if (typeof sort !== 'undefined') {
-        // TODO: prevent injection
-        sortArray = JSON.parse(sort);
-        for (var i = 0; i < sortArray.length; i ++) {
-
-            // predefined indexes (applicable if only sorted by 1 field)
-            if (sortArray.length === 1) {
-                if (sortArray[i].field === 'date') {
-                    queryParams = ['chrono'];
-                    sortParams = ['BY', 'nosort', sortArray[i].order];
-                } else if (sortArray[i].field === 'comments') {
-                    queryParams = ['comments'];
-                    sortParams = ['BY', 'nosort', sortArray[i].order];
-                } else if (sortArray[i].field === 'likes') {
-                    queryParams = ['likes'];
-                    sortParams = ['BY', 'nosort', sortArray[i].order];
-                } else if (sortArray[i].field === 'videos') {
-                    queryParams = ['videos'];
-                    sortParams = ['BY', 'nosort', sortArray[i].order];
-                } else if (sortArray[i].field === 'favorites') {
-                    queryParams = ['favorites'];
-                    sortParams = ['BY', 'nosort', sortArray[i].order];
-                }
-            } else {
-                // generic fields
-                sortParams.push('BY');
-                sortParams.push('*->' + sortArray[i].field);
-                if (sortArray[i].isAlpha === true) sortParams.push('ALPHA');
-                sortParams.push(sortArray[i].order);
-            }
-        }
-    }
-
-    // Fields
+// List Bids
+router.route('/bids').get(function(req, res, next) {
     var fields = [
-        'id',
-        'caption',
-        'thumbnail_src',
-        'display_src',
-        'date',
-        'likes',
-        'comments',
-        'is_video',
-        'video_url'
-    ];
+      "productName",
+      "productCategory",
+      "supplierName",
+      "quantity",
+      "unitPrice",
+      "slottingFee",
+      "productDescription"
+    ]
     var fieldParams = [];
     for (var i in fields) {
-        fieldParams.push('GET');
-        fieldParams.push('*->' + fields[i]);
+        fieldParams.push("GET");
+        fieldParams.push("*->" + fields[i]);
     }
-
-    // Pagination
-    var paginationParams = [];
-    var maxResult = parseInt(req.query.maxResult);
-    var firstResult = parseInt(req.query.firstResult);
-    if (Number.isInteger(firstResult) && firstResult >= 0 &&
-        Number.isInteger(maxResult) && maxResult > 0) {
-        paginationParams = [
-            'LIMIT',
-            firstResult,
-            maxResult
-        ]
-    } else {
-        paginationParams = [
-            'LIMIT',
-            0,
-            12
-        ]
-    }
-
-    // Form Query
-    queryParams = queryParams.concat(sortParams);
-    queryParams = queryParams.concat(fieldParams);
-    queryParams = queryParams.concat(paginationParams);
-
-    db.get().sort(queryParams, function(err, result) {
+    db.get().sort('cost', 'BY', 'nosort', fieldParams, function(err, result) {
         var posts = [];
         for (var i = 0; i < result.length / fields.length; i ++) {
             var post = {};
@@ -124,6 +34,46 @@ router.route('/posts').get(function(req, res, next) {
 
         res.send(posts);
     });
+});
+
+// Place Bid
+router.route('/bid').post(function(req, res, next) {
+    var productName = req.body.productName;
+    var supplierName = req.body.supplierName;
+    var unitPrice = req.body.unitPrice;
+    var slottingFee = req.body.slottingFee;
+    var productDescription = req.body.productDescription;
+    var quantity = req.body.quantity;
+    var productCategory = req.body.productCategory;
+
+    var dataSet = [
+        'productName', productName,
+        'supplierName', supplierName,
+        'unitPrice', unitPrice,
+        'slottingFee', slottingFee,
+        'productDescription', productDescription,
+        'quantity', quantity,
+        'productCategory', productCategory
+    ];
+
+    // get latest bid #
+    db.get().incr('id', function(err, result) {
+        var id = result;
+
+        // create a bid
+        db.get().hmset('bid:' + id, dataSet, function(err, result) {
+
+            // calculate total cost
+            var cost = unitPrice * quantity - slottingFee;
+
+            db.get().zadd('cost', cost, 'bid:' + id, function(err, result) {
+                res.send({
+                    'result': 'success'
+                });
+            })
+        });
+    });
+
 });
 
 module.exports = router;
